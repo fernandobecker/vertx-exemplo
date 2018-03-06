@@ -106,7 +106,7 @@ public class MainVerticle extends AbstractVerticle {
             Contato contato = new Contato();
             contato.setId(COUNTER.getAndIncrement());
             contato.setNome("Fernando");
-            contato.setTelefone("13 3222-0000");
+            contato.setTelefone("(48) 3222-0000");
             contatos.put(contato.getId(), contato);
         }
 

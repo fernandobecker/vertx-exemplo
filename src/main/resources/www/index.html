@@ -9,8 +9,8 @@
         
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
         
-        <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+        <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
         
     </head>
 
@@ -30,7 +30,7 @@
 
                         <h1>Meus Contatos</h1>
 
-                        <button class="pull-right btn btn-primary product-add" data-action="add" data-toggle="modal" data-target="#productModal">
+                        <button class="pull-right btn btn-primary product-add" data-action="add" data-toggle="modal" data-target="#modalProduto">
                             <span class="glyphicon glyphicon-plus"></span> Adicionar Contato
                         </button>
 
@@ -43,7 +43,6 @@
                                 </tr>
                             </thead>
                             <tbody id="content">
-                                <!-- filled using Ajax -->
                             </tbody>
                         </table>
 
@@ -58,11 +57,11 @@
         <script>
 
             $(function () {
-                load();
-                initModal();
+                carregar();
+                iniciarModal();
             });
 
-            function create(nome, telefone) {
+            function criarContato(nome, telefone) {
                 $.post("/api/contatos", JSON.stringify({nome: nome, telefone: telefone}), function () {
                     carregar();
                 }, "json");
@@ -93,16 +92,16 @@
                     $.each(data, function (key, val) {
                         $("<tr><td>" + val.id + "</td><td>" + val.nome + "</td><td>" + val.telefone + "</td>" +
                                 "<td>" +
-                                "<button data-action='edit' class='btn btn-primary btn-sm product-edit' " +
+                                "<button data-action='edit' class='btn btn-primary btn-sm editar-produto' " +
                                 "data-toggle='modal' " +
-                                "data-target='#productModal' " +
+                                "data-target='#modalProduto' " +
                                 "data-nome='" + val.nome + "' " +
                                 "data-telefone='" + val.telefone + "' " +
                                 "data-id='" + val.id + "'>" +
                                 "<span class='glyphicon glyphicon-pencil'></span>" +
                                 "</button>" +
                                 "&nbsp;" +
-                                "<button class='btn btn-danger btn-sm product-delete' data-id='" + val.id + "'>" +
+                                "<button class='btn btn-danger btn-sm apagar-produto' data-id='" + val.id + "'>" +
                                 "   <span class='glyphicon glyphicon-minus'></span>" +
                                 "</button>" +
                                 "</td>" +
@@ -113,42 +112,42 @@
             }
 
             function initCallbacks() {
-                $(".product-delete").unbind().click(function () {
+                $(".apagar-produto").unbind().click(function () {
                     var id = $(this).data("id");
-                    remove(id);
+                    apagar(id);
                 });
             }
 
-            function initModal() {
-                $("#productModal").on('show.bs.modal', function (event) {
+            function iniciarModal() {
+                $("#modalProduto").on('show.bs.modal', function (event) {
                     var button = $(event.relatedTarget);
                     var action = button.data('action');
                     var id = button.data('id');
-                    var produtotAction = $("#produtotAction");
-                    produtotAction.unbind();
+                    var acaoProducto = $("#acaoProducto");
+                    acaoProducto.unbind();
                     var modal = $(this);
                     if (action === "add") {
                         modal.find('.modal-title').text("Adicionar Contato");
                         modal.find('#produto-nome').val("");
                         modal.find('#produto-telefone').val("");
-                        produtotAction.click(function () {
-                            create($("#produto-nome").val(), $("#produto-telefone").val());
-                            $('#productModal').modal('toggle');
+                        acaoProducto.click(function () {
+                            criarContato($("#produto-nome").val(), $("#produto-telefone").val());
+                            $('#modalProduto').modal('toggle');
                         });
                     } else {
                         modal.find('.modal-title').text("Editar");
                         modal.find('#produto-nome').val(button.data("nome"));
                         modal.find('#produto-telefone').val(button.data("telefone"));
-                        produtotAction.click(function () {
-                            update(id, $("#produto-nome").val(), $("#produto-telefone").val());
-                            $('#productModal').modal('toggle');
+                        acaoProducto.click(function () {
+                            atualizar(id, $("#produto-nome").val(), $("#produto-telefone").val());
+                            $('#modalProduto').modal('toggle');
                         });
                     }
                 });
             }
         </script>
 
-        <div class="modal fade" id="productModal" tabindex="-1" role="dialog">
+        <div class="modal fade" id="modalProduto" tabindex="-1" role="dialog">
 
             <div class="modal-dialog" role="dialog">
 
@@ -174,7 +173,7 @@
 
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                        <button type="button" id="c" class="btn btn-primary">Salvar</button>
+                        <button type="button" id="acaoProducto" class="btn btn-primary">Salvar</button>
                     </div>
 
                 </div>
